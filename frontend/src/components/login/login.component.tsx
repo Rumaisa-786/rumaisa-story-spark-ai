@@ -61,7 +61,7 @@ const LoginComponent = () => {
   };
 
   if (isLoggedIn) {
-    return <RedirectComponent defaultPath="/" />;
+    return <RedirectComponent defaultPath="/dashboard" />;
   }
 
   return (
