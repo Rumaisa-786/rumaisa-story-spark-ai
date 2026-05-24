@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 interface IRelatedStoriesComponentProps {
   posts: Post[],
-  currentPostId:String;
+  currentPostId: string;
 }
 
 const RelatedStoriesComponent: React.FC<IRelatedStoriesComponentProps> = ({
