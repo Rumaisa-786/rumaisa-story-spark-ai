@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { getShortenedText, ITopicData, topicsData, getWordCount, SELECTED_TOPIC_CLASSES } from "./stories.utils";
 import toast, { Toaster } from "react-hot-toast";
 import { useCreatePostMutation, useDeletePostMutation } from "../../redux/apis/post.api";
@@ -775,7 +775,7 @@ if (isLoading) {
             <div id="story-content" className="prose prose-invert max-w-none text-slate-300 leading-relaxed tracking-wide relative z-10">
               <p className="break-words whitespace-pre-wrap">
                 {sentenceSegments.length > 0 ? (
-                  sentenceSegments.map((segment) => {
+                  sentenceSegments.map((segment: StorySentenceSegment) => {
                     const isActiveSentence =
                       isNarrationActive &&
                       narrationWordIndex >= segment.startWordIndex &&

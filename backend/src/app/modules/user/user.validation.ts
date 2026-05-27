@@ -38,9 +38,16 @@ const resetPassword = z.object({
   }),
 });
 
+const updateUser = z.object({
+  body: z.object({
+    name: z.string().optional(),
+  }).passthrough(),
+});
+
 export const UserValidator = {
   register,
   login,
   forgotPassword,
   resetPassword,
+  updateUser,
 };

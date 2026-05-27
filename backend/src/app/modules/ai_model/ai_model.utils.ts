@@ -91,20 +91,35 @@ export async function generateWithGeminiStories(
         The stories MUST be written entirely in the ${language} language.
         Each story should be in JSON format with fields: "title", "content", and "tag".
         Ensure each story is approximately ${wordLength} words long.
- main
+        Return the result as a JSON array of stories.`
     );
 
     throwIfAborted(signal);
 
     const text = response.response.text();
- main
+    const stories: Story[] = JSON.parse(text);
+
+    // Fetch images for stories concurrently
+    const imagePromises = stories.map(async (story) => {
+      try {
+        const imageResponse = await fetchImageURL(story.title);
+        return imageResponse?.imageUrl || "";
+      } catch (e) {
+        return "";
+      }
+    });
+    
+    const imageUrls = await Promise.all(imagePromises);
+
     return stories.map((story, index) => ({
       ...story,
       language,
-      imageURL: imageResults[index].imageUrl,
+      imageURL: imageUrls[index],
       uuid: uuidv4(),
     }));
- main
+  } catch (error: any) {
+    if (error instanceof GenerationAbortedError) throw error;
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, "Failed to generate stories");
   }
 }
 
