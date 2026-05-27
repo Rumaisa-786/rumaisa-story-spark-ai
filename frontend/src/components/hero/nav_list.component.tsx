@@ -82,6 +82,7 @@ const NavListComponent: React.FC = () => {
                     {isActive && (
                       <span className="w-1.5 h-1.5 bg-custom rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                     )}
+                    <i className="fa-solid fa-house mr-1.5"></i>
                     HOME
                   </>
                 )}
@@ -92,6 +93,7 @@ const NavListComponent: React.FC = () => {
                     {isActive && (
                       <span className="w-1.5 h-1.5 bg-custom rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                     )}
+                    <i className="fa-solid fa-compass mr-1.5"></i>
                     EXPLORE
                   </>
                 )}
@@ -102,6 +104,7 @@ const NavListComponent: React.FC = () => {
                     {isActive && (
                       <span className="w-1.5 h-1.5 bg-custom rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                     )}
+                    <i className="fa-solid fa-book-open mr-1.5"></i>
                     INSPIRING STORIES
                   </>
                 )}
@@ -112,7 +115,8 @@ const NavListComponent: React.FC = () => {
                     {isActive && (
                       <span className="w-1.5 h-1.5 bg-custom rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                     )}
-                    📊 ANALYTICS
+                    <i className="fa-solid fa-chart-column mr-1.5"></i>
+                    ANALYTICS
                   </>
                 )}
               </NavLink>
@@ -122,7 +126,8 @@ const NavListComponent: React.FC = () => {
                     {isActive && (
                       <span className="w-1.5 h-1.5 bg-custom rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                     )}
-                    ✍️ COLLAB
+                    <i className="fa-solid fa-pen-nib mr-1.5"></i>
+                    COLLAB
                   </>
                 )}
               </NavLink>
@@ -132,6 +137,7 @@ const NavListComponent: React.FC = () => {
                     {isActive && (
                       <span className="w-1.5 h-1.5 bg-custom rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                     )}
+                    <i className="fa-solid fa-envelope mr-1.5"></i>
                     CONTACT US
                   </>
                 )}
@@ -142,6 +148,7 @@ const NavListComponent: React.FC = () => {
                     {isActive && (
                       <span className="w-1.5 h-1.5 bg-custom rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                     )}
+                    <i className="fa-solid fa-users mr-1.5"></i>
                     COMMUNITY
                   </>
                 )}
@@ -154,6 +161,7 @@ const NavListComponent: React.FC = () => {
                         {isActive && (
                           <span className="w-1.5 h-1.5 bg-custom rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                         )}
+                        <i className="fa-solid fa-bookmark mr-1.5"></i>
                         SAVED STORIES
                       </>
                     )}
@@ -164,6 +172,7 @@ const NavListComponent: React.FC = () => {
                         {isActive && (
                           <span className="w-1.5 h-1.5 bg-custom rounded-full mr-1.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
                         )}
+                        <i className="fa-solid fa-table-columns mr-1.5"></i>
                         DASHBOARD
                       </>
                     )}
@@ -172,7 +181,7 @@ const NavListComponent: React.FC = () => {
               )}
           </div>
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-3">
               <button
                 type="button"
                 aria-label="Open Help Center"
@@ -218,13 +227,26 @@ const NavListComponent: React.FC = () => {
               </div>
             </div>
 
-            <button
-              type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              className="md:hidden text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300 p-2 transition-all duration-300"
-              onClick={() => setMenuOpen((prev) => !prev)}>
-              <i className={`fas ${menuOpen ? "fa-xmark" : "fa-bars"} text-xl`} />
-            </button>
+            {/* Mobile/Tablet Header actions */}
+            <div className="flex lg:hidden items-center gap-2">
+              <ThemeToggle />
+              <div className="relative inline-flex" ref={notificationMenuRef}>
+                <button
+                  type="button"
+                  aria-label="Notifications"
+                  className="relative rounded-full p-2 text-slate-600 dark:text-slate-400 transition-all duration-300 hover:bg-slate-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
+                  data-notification-trigger="true"
+                  onClick={toggle}
+                >
+                  <i className="fa-solid fa-bell"></i>
+                  {unreadCount > 0 && (
+                    <span className="absolute right-0 top-0 grid min-h-[18px] min-w-[18px] -translate-y-1/2 translate-x-1/2 place-items-center rounded-full bg-rose-500 px-1 text-[11px] font-semibold text-white">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -235,98 +257,6 @@ const NavListComponent: React.FC = () => {
           unreadCount={unreadCount}
           onMarkAsRead={markAsRead}
         />
-
-        {menuOpen && (
-          <div className="md:hidden px-5 pb-4 flex flex-col gap-3 border-t border-slate-200/70 dark:border-white/10 mt-2">
-            <NavLink to="/" end className={({ isActive }) => getMobileLinkClass(isActive)}>
-              {({ isActive }) => (
-                <>
-                  {isActive && (
-                    <span className="w-2 h-2 bg-custom rounded-full mr-2.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
-                  )}
-                  HOME
-                </>
-              )}
-            </NavLink>
-            <NavLink to="/explore" className={({ isActive }) => getMobileLinkClass(isActive)}>
-              {({ isActive }) => (
-                <>
-                  {isActive && (
-                    <span className="w-2 h-2 bg-custom rounded-full mr-2.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
-                  )}
-                  EXPLORE
-                </>
-              )}
-            </NavLink>
-            <NavLink to="/analytics" className={({ isActive }) => getMobileLinkClass(isActive)}>
-              {({ isActive }) => (
-                <>
-                  {isActive && <span className="w-2 h-2 bg-custom rounded-full mr-2.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />}
-                  📊 ANALYTICS
-                </>
-              )}
-            </NavLink>
-            <NavLink to="/collab" className={({ isActive }) => getMobileLinkClass(isActive)}>
-              {({ isActive }) => (
-                <>
-                  {isActive && <span className="w-2 h-2 bg-custom rounded-full mr-2.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />}
-                  ✍️ COLLAB
-                </>
-              )}
-            </NavLink>
-            <NavLink to="/community" className={({ isActive }) => getMobileLinkClass(isActive)}>
-              {({ isActive }) => (
-                <>
-                  {isActive && (
-                    <span className="w-2 h-2 bg-custom rounded-full mr-2.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
-                  )}
-                  COMMUNITY
-                </>
-              )}
-            </NavLink>
-            {isLogin && (
-              <>
-                <NavLink to="/bookmarks" className={({ isActive }) => getMobileLinkClass(isActive)}>
-                  {({ isActive }) => (
-                    <>
-                      {isActive && (
-                        <span className="w-2 h-2 bg-custom rounded-full mr-2.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
-                      )}
-                      SAVED STORIES
-                    </>
-                  )}
-                </NavLink>
-                {isAdmin && (
-                  <NavLink to="/dashboard" className={({ isActive }) => getMobileLinkClass(isActive)}>
-                    {({ isActive }) => (
-                      <>
-                        {isActive && (
-                          <span className="w-2 h-2 bg-custom rounded-full mr-2.5 animate-pulse shadow-[0_0_8px_#3b82f6]" />
-                        )}
-                        DASHBOARD
-                      </>
-                    )}
-                  </NavLink>
-                )}
-              </>
-            )}
-            <button type="button" className="text-left text-slate-600 dark:text-slate-400 py-2" data-notification-trigger="true" onClick={toggle}>
-              NOTIFICATIONS {unreadCount > 0 && `(${unreadCount})`}
-            </button>
-            {
-              isLogin ? (
-                <button onClick={handelLogout} className="text-left text-slate-600 dark:text-slate-400 py-2">
-                  LOGOUT
-                </button>
-              ) : (
-                <>
-                  <Link to="/login" className="text-slate-600 dark:text-slate-400 block px-3 py-2 rounded-md hover:bg-slate-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white">LOGIN</Link>
-                  <Link to="/signup" className="text-slate-600 dark:text-slate-400 block px-3 py-2 rounded-md hover:bg-slate-200/60 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white">SIGN UP</Link>
-                </>
-              )
-            }
-          </div>
-        )}
       </div>
     </header>
   );

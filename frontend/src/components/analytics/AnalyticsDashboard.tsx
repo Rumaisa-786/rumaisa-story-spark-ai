@@ -3,6 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, CartesianGrid,
 } from "recharts";
+import { useTheme } from "../theme/theme.context";
 
 const API_BASE = import.meta.env.VITE_BASE_URL || "http://localhost:5000/api/v1";
 
@@ -26,6 +27,7 @@ const HOUR_LABELS = ["12am","1am","2am","3am","4am","5am","6am","7am","8am","9am
   "12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm","10pm","11pm"];
 
 export default function AnalyticsDashboard() {
+  const { isDark } = useTheme();
   const [overview, setOverview] = useState<IOverview | null>(null);
   const [heatmap, setHeatmap] = useState<IHeatmapDay[]>([]);
   const [genres, setGenres] = useState<IGenre[]>([]);
@@ -36,11 +38,17 @@ export default function AnalyticsDashboard() {
   const token = localStorage.getItem("token") || "";
 
   const fetchData = async (endpoint: string) => {
-    const res = await fetch(`${API_BASE}/analytics/${endpoint}`, {
-      headers: { Authorization: token },
-    });
-    const data = await res.json();
-    return data.data;
+    try {
+      const res = await fetch(`${API_BASE}/analytics/${endpoint}`, {
+        headers: { Authorization: token },
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.data;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   };
 
   useEffect(() => {
@@ -53,11 +61,11 @@ export default function AnalyticsDashboard() {
           fetchData("wordcloud"),
           fetchData("productive-hours"),
         ]);
-        setOverview(ov);
-        setHeatmap(hm);
-        setGenres(gn);
-        setWordCloud(wc);
-        setHours(hr);
+        setOverview(ov || null);
+        setHeatmap(hm || []);
+        setGenres(gn || []);
+        setWordCloud(wc || []);
+        setHours(hr || []);
       } catch (e) {
         console.error(e);
       } finally {
@@ -68,23 +76,25 @@ export default function AnalyticsDashboard() {
   }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) return (
-    <div className="min-h-screen bg-[#0d0d14] flex items-center justify-center">
-      <div className="text-indigo-400 text-xl animate-pulse">Loading your analytics...</div>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0d0d14] flex items-center justify-center transition-colors duration-300">
+      <div className="text-indigo-600 dark:text-indigo-400 text-xl animate-pulse">Loading your analytics...</div>
     </div>
   );
 
-  const maxHour = hours.reduce((max, h) => h.count > max.count ? h : max, hours[0]);
+  const maxHour = (hours && hours.length > 0)
+    ? hours.reduce((max, h) => (h && h.count > (max?.count || 0)) ? h : max, hours[0])
+    : null;
 
   return (
-    <div className="min-h-screen bg-[#0d0d14] text-white px-6 py-10">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0d0d14] dark:text-white px-6 py-10 transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
             📊 Story Analytics
           </h1>
-          <p className="text-white/40 mt-2">Your personal writing insights and patterns</p>
+          <p className="text-slate-500 dark:text-white/40 mt-2">Your personal writing insights and patterns</p>
         </div>
 
         {/* Overview Cards */}
@@ -97,10 +107,10 @@ export default function AnalyticsDashboard() {
             { label: "Total Likes", value: overview?.totalLikes || 0, icon: "❤️" },
             { label: "Total Views", value: overview?.totalViews || 0, icon: "👁️" },
           ].map((card) => (
-            <div key={card.label} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+            <div key={card.label} className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-center shadow-sm dark:shadow-none">
               <div className="text-2xl mb-1">{card.icon}</div>
-              <div className="text-2xl font-bold text-indigo-400">{card.value}</div>
-              <div className="text-xs text-white/40 mt-1">{card.label}</div>
+              <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{card.value}</div>
+              <div className="text-xs text-slate-500 dark:text-white/40 mt-1">{card.label}</div>
             </div>
           ))}
         </div>
@@ -108,32 +118,32 @@ export default function AnalyticsDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 
           {/* Genre Distribution */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold mb-4 text-indigo-300">🎭 Genre Distribution</h2>
+          <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm dark:shadow-none">
+            <h2 className="text-lg font-semibold mb-4 text-indigo-600 dark:text-indigo-300">🎭 Genre Distribution</h2>
             {genres.length === 0 ? (
-              <p className="text-white/30 text-center py-8">No genre data yet</p>
+              <p className="text-slate-400 dark:text-white/30 text-center py-8">No genre data yet</p>
             ) : (
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie data={genres} dataKey="count" nameKey="genre" cx="50%" cy="50%" outerRadius={90} label={({ name }: { name?: string }) => name ?? ""}>
                     {genres.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
-                  <Tooltip contentStyle={{ background: "#1a1a2e", border: "1px solid #ffffff20", borderRadius: 8 }} />
+                  <Tooltip contentStyle={{ background: isDark ? "#1a1a2e" : "#ffffff", border: isDark ? "1px solid #ffffff20" : "1px solid #e2e8f0", borderRadius: 8, color: isDark ? "#ffffff" : "#0f172a" }} />
                 </PieChart>
               </ResponsiveContainer>
             )}
           </div>
 
           {/* Productive Hours */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <h2 className="text-lg font-semibold mb-1 text-indigo-300">⏰ Most Productive Hours</h2>
-            {maxHour && <p className="text-xs text-white/40 mb-4">You write best at {HOUR_LABELS[maxHour.hour]}</p>}
+          <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm dark:shadow-none">
+            <h2 className="text-lg font-semibold mb-1 text-indigo-600 dark:text-indigo-300">⏰ Most Productive Hours</h2>
+            {maxHour && <p className="text-xs text-slate-500 dark:text-white/40 mb-4">You write best at {HOUR_LABELS[maxHour.hour]}</p>}
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={hours.map(h => ({ ...h, label: HOUR_LABELS[h.hour] }))}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
-                <XAxis dataKey="label" tick={{ fill: "#ffffff40", fontSize: 10 }} interval={3} />
-                <YAxis tick={{ fill: "#ffffff40", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "#1a1a2e", border: "1px solid #ffffff20", borderRadius: 8 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#ffffff10" : "#00000010"} />
+                <XAxis dataKey="label" tick={{ fill: isDark ? "#ffffff40" : "#0f172a60", fontSize: 10 }} interval={3} />
+                <YAxis tick={{ fill: isDark ? "#ffffff40" : "#0f172a60", fontSize: 10 }} />
+                <Tooltip contentStyle={{ background: isDark ? "#1a1a2e" : "#ffffff", border: isDark ? "1px solid #ffffff20" : "1px solid #e2e8f0", borderRadius: 8, color: isDark ? "#ffffff" : "#0f172a" }} />
                 <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -141,10 +151,10 @@ export default function AnalyticsDashboard() {
         </div>
 
         {/* Writing Activity Heatmap */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4 text-indigo-300">📅 Writing Activity</h2>
+        <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 mb-6 shadow-sm dark:shadow-none">
+          <h2 className="text-lg font-semibold mb-4 text-indigo-600 dark:text-indigo-300">📅 Writing Activity</h2>
           {heatmap.length === 0 ? (
-            <p className="text-white/30 text-center py-8">No activity data yet — start writing!</p>
+            <p className="text-slate-400 dark:text-white/30 text-center py-8">No activity data yet — start writing!</p>
           ) : (
             <div className="overflow-x-auto">
               <div className="flex gap-1 flex-wrap">
@@ -165,7 +175,7 @@ export default function AnalyticsDashboard() {
                   );
                 })}
               </div>
-              <div className="flex items-center gap-2 mt-3 text-xs text-white/30">
+              <div className="flex items-center gap-2 mt-3 text-xs text-slate-400 dark:text-white/30">
                 <span>Less</span>
                 {[0.05, 0.3, 0.6, 1].map((o, i) => (
                   <div key={i} className="w-3 h-3 rounded-sm" style={{ backgroundColor: `rgba(99,102,241,${o})` }} />
@@ -177,10 +187,10 @@ export default function AnalyticsDashboard() {
         </div>
 
         {/* Word Cloud */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-          <h2 className="text-lg font-semibold mb-4 text-indigo-300">☁️ Your Story Themes</h2>
+        <div className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-sm dark:shadow-none">
+          <h2 className="text-lg font-semibold mb-4 text-indigo-600 dark:text-indigo-300">☁️ Your Story Themes</h2>
           {wordCloud.length === 0 ? (
-            <p className="text-white/30 text-center py-8">No stories yet — generate some!</p>
+            <p className="text-slate-400 dark:text-white/30 text-center py-8">No stories yet — generate some!</p>
           ) : (
             <div className="flex flex-wrap gap-2 justify-center py-4">
               {wordCloud.map((word, i) => {
