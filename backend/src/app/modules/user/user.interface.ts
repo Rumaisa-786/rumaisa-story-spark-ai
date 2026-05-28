@@ -25,6 +25,13 @@ export interface IUser {
   lastRequestDate: Date;
   posts: Types.ObjectId[];
   isApplyForWriter: boolean;
+  gamification: {
+    xp: number;
+    level: number;
+    streak: number;
+    lastActiveDate: Date | null;
+    badges: string[];
+  };
 }
 
 export type UserModel = Model<IUser, object>;
