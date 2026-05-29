@@ -9,14 +9,31 @@ interface SupportLinksProps {
 const SupportLinks: FC<SupportLinksProps> = ({ links }) => {
   return (
     <motion.section
-      id="support"
-      className="scroll-mt-24"
-      initial={{ opacity: 0, y: 20 }}
+      id="support-links-section"
+      className="scroll-mt-28"
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
+      viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5 }}
       aria-labelledby="support-heading"
     >
+      {/* Header */}
+      <div className="mb-12">
+        <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-4 py-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-300">
+          <i className="fa-solid fa-headset"></i>
+          COMMUNITY & SUPPORT
+        </div>
+
+        <h2
+          id="support-heading"
+          className="mt-5 text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white"
+        >
+          Need More Help?
+        </h2>
+
+        <p className="mt-4 max-w-2xl text-slate-600 dark:text-slate-400 leading-relaxed">
+          Connect with the StorySparkAI community, report issues, explore
+          documentation, and collaborate with contributors worldwide.
       <div className="text-center mb-10">
         
         <h2
@@ -72,6 +89,17 @@ const SupportLinks: FC<SupportLinksProps> = ({ links }) => {
               </p>
 
             </div>
+          </div>
+
+          {/* GitHub CTA */}
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-2xl border border-indigo-500/20 bg-indigo-500/10 px-5 py-3 text-sm font-semibold text-indigo-600 transition-all duration-300 hover:scale-105 hover:bg-indigo-500/20 dark:text-indigo-300"
+          >
+            <i className="fa-brands fa-github text-base"></i>
+            Contribute Now
           </a>
         ))}
 

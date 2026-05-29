@@ -9,11 +9,11 @@ interface SetupGuideProps {
 const SetupGuide: FC<SetupGuideProps> = ({ steps }) => {
   return (
     <motion.section
-      id="developer-setup"
-      className="scroll-mt-24"
-      initial={{ opacity: 0, y: 20 }}
+      id="setup-guide-section"
+      className="scroll-mt-28"
+      initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
+      viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.5 }}
       aria-labelledby="setup-heading"
     >
@@ -32,15 +32,16 @@ const SetupGuide: FC<SetupGuideProps> = ({ steps }) => {
 
       </div>
 
+      {/* Timeline */}
       <div className="relative">
         
         {/* Vertical connector line (desktop) */}
         <div
-          className="hidden md:block absolute left-6 top-8 bottom-8 w-px bg-gradient-to-b from-indigo-500/50 via-blue-500/30 to-transparent"
+          className="absolute left-6 top-0 bottom-0 hidden md:block w-px bg-gradient-to-b from-indigo-500/40 via-blue-500/20 to-transparent"
           aria-hidden="true"
         />
 
-        <ol className="space-y-6">
+        <ol className="space-y-8">
           {steps.map((step, index) => (
             <li
               key={step.step}
@@ -120,7 +121,7 @@ const SetupGuide: FC<SetupGuideProps> = ({ steps }) => {
 
           </div>
         </div>
-      </div>
+      </motion.div>
     </motion.section>
   );
 };
