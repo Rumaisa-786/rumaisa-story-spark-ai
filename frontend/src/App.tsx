@@ -19,19 +19,8 @@ import CollabRoom from "./components/collab/CollabRoom";
 import StoriesComponent from "./components/stories/stories.component";
 import PublishedStoriesComponent from "./components/dashboard/posts/published_stories.component";
 
-
-
-
 import ScrollToTopButton from "./components/ScrollToTopButton";
-
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Navigate,
-  Outlet,
-} from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
-
 
 import HeroSectionComponent from "./components/hero/hero_section.component";
 import HomeComponent from "./components/home/home.component";
@@ -150,9 +139,9 @@ const router = createBrowserRouter([
             element: <ProtectedRoute allowedRoles={[USER_ROLE.USER, USER_ROLE.WRITER]} />,
             children: [{ path: "settings", element: <SettingComponent /> },
               {
-    path: "published-stories",
-    element: <PublishedStoriesComponent />,
-  },
+                path: "published-stories",
+                element: <PublishedStoriesComponent />,
+              },
             ],
           },
           {
@@ -179,14 +168,6 @@ function App() {
     </>
   );
 }
-
-
-
-export default App;
-
-
-export default App;
-
 
 export default App;
 
