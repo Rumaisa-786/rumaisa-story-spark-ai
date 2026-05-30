@@ -63,6 +63,7 @@ const FAQAccordion: FC<FAQAccordionProps> = ({ items }) => {
             <article
               key={item.id}
               role="listitem"
+               onMouseLeave={() => setOpenId(null)}
               className="bg-blue-500/10 border border-white/5 rounded-xl overflow-hidden transition-colors hover:border-indigo-500/20"
             >
               <h3>
@@ -72,7 +73,7 @@ const FAQAccordion: FC<FAQAccordionProps> = ({ items }) => {
                   className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500"
                   aria-expanded={isOpen}
                   aria-controls={panelId}
-                  onClick={() => toggleItem(item.id)}
+                  onMouseEnter={() => toggleItem(item.id)}
                   onKeyDown={(e) => handleKeyDown(e, item.id)}
                 >
                   <span className="text-gray-300 font-medium pr-4">
