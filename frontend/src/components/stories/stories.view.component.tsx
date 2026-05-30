@@ -697,13 +697,81 @@ const StoriesViewComponent: React.FC<StoriesComponentProps> = ({
                 {sentenceSegments.length > 0 ? (
                   sentenceSegments.map((segment: StorySentenceSegment) => {
                     const isActiveSentence = isNarrationActive && narrationWordIndex >= segment.startWordIndex && narrationWordIndex <= segment.endWordIndex;
+                    
+                    // Split the sentence text into word tokens, preserving whitespace
+                    const rawParts = segment.text.split(/(\s+)/);
+                    let wordOffset = 0;
+
                     return (
-                      <span key={segment.id} className={isActiveSentence ? "rounded-md bg-indigo-500/20 px-0.5 py-0.5 text-indigo-100 ring-1 ring-indigo-400/30" : undefined}>
-                        {segment.text}
+                      <span
+                        key={segment.id}
+                        className={isActiveSentence ? "transition-colors duration-300 text-slate-100" : undefined}
+                      >
+                        {rawParts.map((part, partIdx) => {
+                          if (part === "") return null;
+                          if (/^\s+$/.test(part)) {
+                            return part;
+                          }
+
+                          const absoluteWordIndex = segment.startWordIndex + wordOffset;
+                          wordOffset++;
+
+                          const isActiveWord = isNarrationActive && narrationWordIndex === absoluteWordIndex;
+
+                          if (isActiveWord) {
+                            return (
+                              <span
+                                key={partIdx}
+                                className="bg-indigo-500/20 text-indigo-300 rounded px-0.5 transition-all duration-150"
+                              >
+                                {part}
+                              </span>
+                            );
+                          }
+
+                          return (
+                            <span key={partIdx}>
+                              {part}
+                            </span>
+                          );
+                        })}
                       </span>
                     );
                   })
-                ) : selectedStory.content}
+                ) : (
+                  (() => {
+                    const rawParts = selectedStory.content.split(/(\s+)/);
+                    let wordOffset = 0;
+                    return rawParts.map((part, partIdx) => {
+                      if (part === "") return null;
+                      if (/^\s+$/.test(part)) {
+                        return part;
+                      }
+
+                      const absoluteWordIndex = wordOffset;
+                      wordOffset++;
+
+                      const isActiveWord = isNarrationActive && narrationWordIndex === absoluteWordIndex;
+
+                      if (isActiveWord) {
+                        return (
+                          <span
+                            key={partIdx}
+                            className="bg-indigo-500/20 text-indigo-300 rounded px-0.5 transition-all duration-150"
+                          >
+                            {part}
+                          </span>
+                        );
+                      }
+
+                      return (
+                        <span key={partIdx}>
+                          {part}
+                        </span>
+                      );
+                    });
+                  })()
+                )}
               </p>
             </div>
 
