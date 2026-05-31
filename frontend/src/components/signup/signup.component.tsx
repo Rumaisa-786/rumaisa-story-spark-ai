@@ -356,8 +356,8 @@ const SignUpComponent = () => {
                 validation={{
                   required: "Name is required",
                 minLength: {
-                value: 3,
-                message: "Name must be at least 3 characters",
+                value: 2,
+                message: "Name must be at least 2 characters",
                 },
                   pattern: {
                     value: /^[A-Za-z0-9\s._]+$/,
