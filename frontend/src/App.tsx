@@ -16,9 +16,6 @@ import BranchingStory from "./components/stories/BranchingStory";
 import CareerComponent from "./components/footer/career.tsx";
 import CollabHome from "./components/collab/CollabHome";
 import CollabRoom from "./components/collab/CollabRoom";
-import StoriesComponent from "./components/stories/stories.component";
-import PublishedStoriesComponent from "./components/dashboard/posts/published_stories.component";
-import ScrollToTopButton from "./components/ScrollToTopButton";
 import CommunityComponent from "./components/community/community.component";
 import Contact from "./components/contactus/contactus";
 import ContributorsComponent from "./components/footer/contributors";
@@ -101,7 +98,6 @@ const router = createBrowserRouter([
       { path: "forgot-password", element: <ForgotPasswordComponent /> },
       { path: "pricing", element: <PricingComponent /> },
       { path: "post/:id", element: <PostDetailsComponent /> },
-      { path: "help", element: <HelpCenterComponent /> },
       { path: "contact-us", element: <Contact /> },
       { path: "about-us", element: <AboutUsComponent /> },
       { path: "career", element: <CareerComponent /> },
@@ -158,9 +154,14 @@ const router = createBrowserRouter([
 
   // Isolated layout branches
   { path: "/auth/email-validation", element: <EmailValidationComponent /> },
-  { path: "/payment", element: <PaymentComponent /> },
-  { path: "/collab", element: <CollabHome /> },
-  { path: "/collab/:roomId", element: <CollabRoom /> },
+  {
+    element: <ProtectedRoute allowedRoles={ALL_ROLES} />,
+    children: [
+      { path: "/payment", element: <PaymentComponent /> },
+      { path: "/collab", element: <CollabHome /> },
+      { path: "/collab/:roomId", element: <CollabRoom /> },
+    ],
+  },
 
   // Dashboard
   {
@@ -172,10 +173,15 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <DashboardComponent /> },
           { path: "profile", element: <ProfileComponent /> },
-          { path: "writers", element: <WriterApplicationComponent /> },
-          { path: "users", element: <UserComponent /> },
           {
-            element: <ProtectedRoute allowedRoles={[USER_ROLE.USER, USER_ROLE.WRITER]} />,
+            element: <ProtectedRoute allowedRoles={ELEVATED_ADMIN_ROLES} />,
+            children: [
+              { path: "writers", element: <WriterApplicationComponent /> },
+              { path: "users", element: <UserComponent /> },
+            ],
+          },
+          {
+            element: <ProtectedRoute allowedRoles={ALL_ROLES} />,
             children: [
               { path: "settings", element: <SettingComponent /> },
               { path: "published-stories", element: <PublishedStoriesComponent /> },

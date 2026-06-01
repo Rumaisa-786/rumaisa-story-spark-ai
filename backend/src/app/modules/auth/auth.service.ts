@@ -14,8 +14,19 @@ import { OTPModel } from "../verify_email/otp.model";
 import { RefreshSession } from "./refresh_session.model";
 import { VerifyEmailService } from "../verify_email/verify_email.service";
 import { GamificationService } from "../gamification/gamification.service";
+import { USER_STATUS } from "../../../enums/user_status";
+import { SUBSCRIPTION_TYPE } from "../../../enums/subscription_type";
 
 const googleClient = new OAuth2Client(config.google_client_id);
+
+const validateUserStatus = (status?: string) => {
+  if (status === USER_STATUS.BLOCKED) {
+    throw new ApiError(httpStatus.FORBIDDEN, "Your account has been blocked.");
+  }
+  if (status === USER_STATUS.INACTIVE) {
+    throw new ApiError(httpStatus.FORBIDDEN, "Your account is inactive.");
+  }
+};
 
 // Token claims; tokenVersion enables global session revocation.
 const buildClaims = (user: any) => ({
@@ -57,6 +68,8 @@ const login = async (payload: AuthModel & { rememberMe?: boolean }) => {
   if (!isExistUser) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found!");
   }
+
+  validateUserStatus(isExistUser.status);
 
   // Check if user has password (Google users might not)
   if (!isExistUser.password) {
@@ -250,6 +263,8 @@ const googleLogin = async (payload: { token: string }) => {
       const newUser: Partial<IUser> = {
         email: email as string,
         name: (googleName || email || "Google User").slice(0, 100),
+        status: USER_STATUS.ACTIVE,
+        subscriptionType: SUBSCRIPTION_TYPE.FREE,
         profile: {
           avatar: (picture as string) || "",
           bio: "",
@@ -264,6 +279,8 @@ const googleLogin = async (payload: { token: string }) => {
 
       user = await User.create(newUser);
     }
+
+    validateUserStatus(user.status);
 
     const accessToken = issueAccessToken(user);
     const refreshTokenData = await issueRefreshToken(user);
