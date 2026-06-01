@@ -14,6 +14,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.9
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -22,10 +26,10 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
-      - name: Work around npm optional dependency bug (Tailwind CSS oxide Linux binary)
-        run: npm install -w story-spark-ai-frontend --no-save @tailwindcss/oxide-linux-x64-gnu
+      - name: Work around pnpm optional dependency bug (Tailwind CSS oxide Linux binary)
+        run: pnpm install -w story-spark-ai-frontend --no-save @tailwindcss/oxide-linux-x64-gnu
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
