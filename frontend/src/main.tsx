@@ -20,14 +20,29 @@ if (!container) {
   throw new Error("Failed to find the root element. Ensure index.html has <div id='root'></div>");
 }
 
+const appContent = (
+  <Provider store={store}>
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  </Provider>
+);
 createRoot(container).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID || ""}>
+    {GOOGLE_CLIENT_ID ? (
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+        <Provider store={store}>
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
+        </Provider>
+      </GoogleOAuthProvider>
+    ) : (
       <Provider store={store}>
         <ThemeProvider>
           <App />
         </ThemeProvider>
       </Provider>
-    </GoogleOAuthProvider>
+    )}
   </StrictMode>
 );
